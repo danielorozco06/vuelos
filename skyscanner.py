@@ -119,6 +119,16 @@ def process_flights(
     print(url_flights)
 
 
+def get_city(airport_code: str, airports: list[dict[str, str]]) -> str:
+    """
+    This function returns the city of the airport.
+    """
+    return next(
+        (airport["city"] for airport in airports if airport["code"] == airport_code),
+        None,
+    )
+
+
 def process_hotel(
     target_airport_code: str,
     airports: list[dict[str, str]],
@@ -126,18 +136,10 @@ def process_hotel(
     final_date: str,
 ) -> None:
     """
-    This function generates and prints the URL for hotel search on Airbnb based on given \
-    airport code, date range and city.
+    This function generates and prints the URL for hotel search on Airbnb
     """
     print("\n>>> Hotel")
-    target_city = next(
-        (
-            airport["city"]
-            for airport in airports
-            if airport["code"] == target_airport_code
-        ),
-        None,
-    )
+    target_city = get_city(target_airport_code, airports)
 
     url_hotel = (
         f"https://www.airbnb.com.co/s/{target_city}/homes?"
