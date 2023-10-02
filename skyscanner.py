@@ -98,25 +98,23 @@ def print_airports(airports: list[dict[str, str]]) -> None:
         )
 
 
-def process_flights(
+def get_url_flight(
     source_airport_code: str,
     target_airport_code: str,
     initial_date: str,
     final_date: str,
-) -> None:
+) -> str:
     """
-    Processes flight information and prints the URL for flight search.
+    Create URL for flight search.
     """
-    print("\n>>> Vuelos")
     base_url = "https://www.espanol.skyscanner.com/transporte/vuelos"
-    url_flights = (
+    return (
         f"{base_url}/"
         f"{source_airport_code}/"
         f"{target_airport_code}/"
         f"{convert_date_format(initial_date)}/"
         f"{convert_date_format(final_date)}"
     )
-    print(url_flights)
 
 
 def get_city(airport_code: str, airports: list[dict[str, str]]) -> str:
@@ -129,51 +127,70 @@ def get_city(airport_code: str, airports: list[dict[str, str]]) -> str:
     )
 
 
-def process_hotel(
+def get_url_hotel(
     target_airport_code: str,
     airports: list[dict[str, str]],
     initial_date: str,
     final_date: str,
-) -> None:
+) -> str:
     """
-    This function generates and prints the URL for hotel search on Airbnb
+    Generate the URL for hotel search on Airbnb
     """
-    print("\n>>> Hotel")
     target_city = get_city(target_airport_code, airports)
+    encoded_target_city = target_city.replace(" ", "%20")
 
-    url_hotel = (
-        f"https://www.airbnb.com.co/s/{target_city}/homes?"
+    return (
+        f"https://www.airbnb.com.co/s/{encoded_target_city}/homes?"
         f"&checkin={initial_date}"
         f"&checkout={final_date}"
         "&adults=2"
     )
-    print(url_hotel)
 
 
-def process_itinerary(
+def create_itinerary(
     source_airport_code: str,
     target_airport_code: str,
-    initial_date: str,
+    init_date: str,
     final_date: str,
-) -> None:
+) -> str:
     """
     This function generates a detailed travel itinerary based on the provided parameters.
     """
-    print("\n>>> Itinerario (https://chat.openai.com)")
-    print(
+    return (
         f"Crear un itinerario detallado del viaje teniendo en cuenta la siguiente información:"
         f"\n-Dos personas"
         f"\n-Aeropuerto de origen: {source_airport_code}"
         f"\n-Aeropuerto de destino: {target_airport_code}"
-        f"\n-Fecha de ida: {initial_date}"
+        f"\n-Fecha de ida: {init_date}"
         f"\n-Fecha de regreso: {final_date}"
         "\n-Incluir horas de cada actividad"
         "\n-Excluir visitas a centros comerciales, tiempo libre y tiempo de relax"
         "\n-Indicar los costos aproximados en USD de cada actividad y el costo total al final"
         "\n-Incluir los costos de transporte entre cada lugar y el costo del desayuno, almuerzo y cena"
         "\n-Incluir pueblos, ciudades muy cercanas y mercados locales"
-        "\n-Incluir los lugares más turísticos"
+        "\n-Incluir los lugares más turísticos\n"
     )
+
+
+def write_itinerary_to_file(
+    source_airport_code: str,
+    target_airport_code: str,
+    init_date: str,
+    final_date: str,
+    url_flight: str,
+    url_hotel: str,
+    itinerary: str,
+) -> None:
+    """
+    Writes the itinerary details to a file.
+    """
+    with open("itinerary.txt", "a") as f:
+        f.write(
+            f"### De {source_airport_code} a {target_airport_code} del {init_date} a {final_date}"
+        )
+        f.write(f"\n>>> Vuelos\n{url_flight}\n")
+        f.write(f"\n>>> Hotel\n{url_hotel}\n")
+        f.write(f"\n>>> Itinerario (https://chat.openai.com)\n{itinerary}\n")
 
 
 def main() -> None:
@@ -193,11 +210,21 @@ def main() -> None:
     target_airports_codes = validate_airport_codes(airport_codes, multiple=True)
 
     for target_airport_code in target_airports_codes:
-        print(f"\n### Desde {source_airport_code} hasta {target_airport_code} ###")
-        process_flights(source_airport_code, target_airport_code, init_date, final_date)
-        process_hotel(target_airport_code, airports, init_date, final_date)
-        process_itinerary(
+        url_flight = get_url_flight(
             source_airport_code, target_airport_code, init_date, final_date
+        )
+        url_hotel = get_url_hotel(target_airport_code, airports, init_date, final_date)
+        itinerary = create_itinerary(
+            source_airport_code, target_airport_code, init_date, final_date
+        )
+        write_itinerary_to_file(
+            source_airport_code,
+            target_airport_code,
+            init_date,
+            final_date,
+            url_flight,
+            url_hotel,
+            itinerary,
         )
 
 
