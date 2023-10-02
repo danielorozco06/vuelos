@@ -75,6 +75,7 @@ for target in airports["targets"]:
         "\n-Incluir horas de cada actividad"
         "\n-Excluir visitas a centros comerciales y tiempo libre"
         "\n-Indicar los costos aproximados en USD de cada actividad y el costo total al final"
+        "\n-Incluir los costos de transporte entre cada lugar y el costo del desayuno, almuerzo y cena"
         "\n-Incluir pueblos, ciudades muy cercanas y mercados locales"
         "\n-Incluir los lugares más turísticos"
     )
