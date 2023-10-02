@@ -61,7 +61,7 @@ airports = {
 for target in airports["targets"]:
     url = f"{base_url}/{airports['source']}/{target}/{initial_date}/{final_date}"
 
-    webbrowser.open_new_tab(url)
+    # webbrowser.open_new_tab(url)
 
     print(
         f"\nCrear un itineario detallado del viaje teniendo en cuenta la siguiente informacion:"
@@ -72,6 +72,6 @@ for target in airports["targets"]:
         f"\n-Fecha de regreso: {final_date}"
         "\n-Incluir horas de cada actividad"
         "\n-Excluir visitas a centros comerciales"
-        "\n-Indicar los costos aproximados en USD y el total al final"
+        "\n-Indicar los costos aproximados en USD de cada actividad y el costo total al final"
         "\n-Incluir pueblos o ciudades muy cercanas"
     )
