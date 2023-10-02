@@ -1,3 +1,7 @@
+"""
+File to open all the URLs of the flights from Medellin to the cities
+"""
+
 import webbrowser
 
 base_url = "https://www.espanol.skyscanner.com/transporte/vuelos"
@@ -68,5 +72,6 @@ for target in airports["targets"]:
         f"\n-Fecha de regreso: {final_date}"
         "\n-Incluir horas de cada actividad"
         "\n-Excluir visitas a centros comerciales"
-        "\n-Indicar los costos aproximados en USD"
+        "\n-Indicar los costos aproximados en USD y el total al final"
+        "\n-Incluir pueblos o ciudades muy cercanas"
     )
