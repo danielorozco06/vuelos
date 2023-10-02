@@ -5,8 +5,8 @@ File to open all the URLs of the flights from Medellin to the cities
 import webbrowser
 
 base_url = "https://www.espanol.skyscanner.com/transporte/vuelos"
-initial_date = "240505"
-final_date = "240515"
+initial_date = "240506"
+final_date = "240514"
 airports = {
     #  "Jose Maria Cordova International Airport - Colombia"
     "source": "MDE",
