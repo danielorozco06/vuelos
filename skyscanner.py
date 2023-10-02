@@ -52,13 +52,21 @@ airports = {
     ],
 }
 
-# Generate the endpoints dynamically
-urls = [
-    f"{base_url}/{airports['source']}/{target}/{initial_date}/{final_date}"
-    for target in airports["targets"]
-]
 
 # Open each URL in a new tab
-for url in urls:
-    print(url)
-    webbrowser.open_new_tab(url)
+for target in airports["targets"]:
+    url = f"{base_url}/{airports['source']}/{target}/{initial_date}/{final_date}"
+
+    # webbrowser.open_new_tab(url)
+
+    print(
+        f"\nCrear un itineario detallado del viaje teniendo en cuenta la siguiente informacion:"
+        f"\n-Dos personas"
+        f"\n-Aeroupuerto de origen: {airports['source']}"
+        f"\n-Aeropuerto de destino: {target}"
+        f"\n-Fecha de ida: {initial_date}"
+        f"\n-Fecha de regreso: {final_date}"
+        "\n-Incluir horas de cada actividad"
+        "\n-Excluir visitas a centros comerciales"
+        "\n-Indicar los costos aproximados en USD"
+    )
