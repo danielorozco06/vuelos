@@ -63,7 +63,7 @@ airports = {
 for target in airports["targets"]:
     url = f"{base_url}/{airports['source']}/{target}/{initial_date}/{final_date}"
 
-    # webbrowser.open_new_tab(url)
+    webbrowser.open_new_tab(url)
 
     print(
         f"\nCrear un itinerario detallado del viaje teniendo en cuenta la siguiente información:"
