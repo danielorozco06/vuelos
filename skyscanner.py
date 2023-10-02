@@ -66,15 +66,15 @@ for target in airports["targets"]:
     webbrowser.open_new_tab(url)
 
     print(
-        f"\nCrear un itineario detallado del viaje teniendo en cuenta la siguiente informacion:"
+        f"\nCrear un itinerario detallado del viaje teniendo en cuenta la siguiente información:"
         f"\n-Dos personas"
-        f"\n-Aeroupuerto de origen: {airports['source']}"
+        f"\n-Aeropuerto de origen: {airports['source']}"
         f"\n-Aeropuerto de destino: {target}"
         f"\n-Fecha de ida: {initial_date}"
         f"\n-Fecha de regreso: {final_date}"
         "\n-Incluir horas de cada actividad"
         "\n-Excluir visitas a centros comerciales y tiempo libre"
         "\n-Indicar los costos aproximados en USD de cada actividad y el costo total al final"
-        "\n-Incluir pueblos o ciudades muy cercanas"
-        "\n-Incluir los lugares mas turisticos"
+        "\n-Incluir pueblos, ciudades muy cercanas y mercados locales"
+        "\n-Incluir los lugares más turísticos"
     )
