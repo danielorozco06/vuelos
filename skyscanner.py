@@ -5,8 +5,8 @@ File to open all the URLs of the flights from Medellin to the cities
 import webbrowser
 
 base_url = "https://www.espanol.skyscanner.com/transporte/vuelos"
-initial_date = "240501"
-final_date = "240508"
+initial_date = "240505"
+final_date = "240515"
 airports = {
     #  "Jose Maria Cordova International Airport - Colombia"
     "source": "MDE",
@@ -33,6 +33,8 @@ airports = {
         "UIO",
         # "Miami International Airport - United States"
         "MIA",
+        # "Orlando International Airport - United States"
+        "MCO",
         # "Lima International Airport - Peru"
         "LIM",
         # "Cusco International Airport - Peru"
@@ -74,4 +76,5 @@ for target in airports["targets"]:
         "\n-Excluir visitas a centros comerciales"
         "\n-Indicar los costos aproximados en USD de cada actividad y el costo total al final"
         "\n-Incluir pueblos o ciudades muy cercanas"
+        "\n-Incluir los lugares mas turisticos"
     )
