@@ -3,10 +3,49 @@ Help with the planning of a trip
 """
 
 import constants
+from datetime import datetime
+
 
 base_url = "https://www.espanol.skyscanner.com/transporte/vuelos"
-initial_date = "240506"
-final_date = "240514"
+
+
+def is_valid_date(date: str) -> bool:
+    """
+    Check if date is valid
+    """
+    try:
+        # Try to convert the string into a datetime object
+        datetime.strptime(date, "%Y-%m-%d")
+        return True
+    except ValueError:
+        # If it raises a ValueError, the string is not a valid date
+        return False
+
+
+def convert_date_format(date: str) -> str:
+    """
+    Convert date from 'YYYY-MM-DD' to 'YYMMDD'
+    """
+    try:
+        # Convert the string into a datetime object
+        dt = datetime.strptime(date, "%Y-%m-%d")
+
+        # Format the datetime object into the desired format
+        return dt.strftime("%y%m%d")
+    except ValueError:
+        # If it raises a ValueError, the string is not a valid date
+        return "Invalid date"
+
+
+initial_date = input("\nIngresar fecha de ida (yyyy-mm-dd): ")
+while not is_valid_date(initial_date):
+    print("Invalid date. Please try again.")
+    initial_date = input("\nIngresar fecha de ida (yyyy-mm-dd): ")
+
+final_date = input("\nIngresar fecha de regreso (yyyy-mm-dd): ")
+while not is_valid_date(final_date):
+    print("Invalid date. Please try again.")
+    final_date = input("\nIngresar fecha de regreso (yy-mm-dd): ")
 
 
 airport_mode = ""
@@ -45,6 +84,9 @@ while True:
 
     # Check if source airport is valid
     if source_airport in airport_codes:
+        source_airport = [
+            airport for airport in airports if airport["code"] == source_airport
+        ][0]
         break
     else:
         print("!!!Airport code not valid!!!")
@@ -69,19 +111,24 @@ while True:
     else:
         print("!!!Airport codes not valids!!!")
 
-# Open each URL in a new tab
 for target_airport in target_airports:
-    print(f"\n####### Desde {source_airport} hasta {target_airport['code']} #######")
+    print(f"\n### Desde {source_airport['code']} hasta {target_airport['code']} ###")
 
     print("\n>>> Vuelos")
-    url_flights = f"{base_url}/{source_airport}/{target_airport['code']}/{initial_date}/{final_date}"
+    url_flights = (
+        f"{base_url}/"
+        f"{source_airport['code']}/"
+        f"{target_airport['code']}/"
+        f"{convert_date_format(initial_date)}/"
+        f"{convert_date_format(final_date)}"
+    )
     print(url_flights)
 
     print("\n>>> Hotel")
     url_hotel = (
         f"https://www.airbnb.com.co/s/{target_airport['code']}/homes?"
-        "&checkin=2024-04-05"
-        "&checkout=2024-04-15"
+        f"&checkin={initial_date}"
+        f"&checkout={final_date}"
         "&adults=2"
     )
     print(url_hotel)
