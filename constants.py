@@ -71,12 +71,6 @@ national_airports = [
     },
     {"code": "EYP", "name": "El Yopal Airport", "city": "Yopal", "country": "Colombia"},
     {
-        "code": "MTR",
-        "name": "Los Garzones Airport",
-        "city": "Monteria",
-        "country": "Colombia",
-    },
-    {
         "code": "MZL",
         "name": "La Nubia Airport",
         "city": "Manizales",
@@ -110,12 +104,6 @@ national_airports = [
         "code": "SMR",
         "name": "Simon Bolivar International Airport",
         "city": "Santa Marta",
-        "country": "Colombia",
-    },
-    {
-        "code": "VUP",
-        "name": "Alfonso Lopez Pumarejo Airport",
-        "city": "Valledupar",
         "country": "Colombia",
     },
     {
@@ -155,12 +143,6 @@ international_airports = [
         "code": "PUJ",
         "name": "Punta Cana Airport",
         "city": "Punta cana",
-        "country": "Dominican Republic",
-    },
-    {
-        "code": "SDQ",
-        "name": "Aeropuerto Internacional Las Américas",
-        "city": "Santo domingo",
         "country": "Dominican Republic",
     },
     {
