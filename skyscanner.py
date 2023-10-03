@@ -6,7 +6,6 @@ import os
 import constants
 import ast
 from datetime import datetime
-from typing import Union
 from dotenv import load_dotenv
 
 load_dotenv()
