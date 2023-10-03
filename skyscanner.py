@@ -4,21 +4,58 @@ Help with the planning of a trip
 
 import os
 import constants
+import ast
 from datetime import datetime
 from typing import Union
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-def is_valid_date(date: str) -> bool:
+def get_airports(airport_mode: str) -> list[dict[str, str]]:
+    """
+    Function to get the airports based on the airport mode.
+    """
+    return (
+        constants.national_airports
+        if airport_mode == "NACIONAL"
+        else constants.international_airports
+    )
+
+
+def validate_date(date: str) -> None:
     """
     Check if date is valid
     """
     try:
         # Try to convert the string into a datetime object
         datetime.strptime(date, "%Y-%m-%d")
-        return True
+        return
     except ValueError:
-        # If it raises a ValueError, the string is not a valid date
-        return False
+        raise ValueError(f"Invalid date {date}. Execution stopped.")
+
+
+def validate_airport_mode(airport_mode: str) -> None:
+    """
+    Validate airport mode
+    """
+    airport_mode = airport_mode.upper()
+    if airport_mode in ["NACIONAL", "INTERNACIONAL"]:
+        return
+    else:
+        raise ValueError(f"Invalid airport mode {airport_mode}. Execution stopped.")
+
+
+def validate_airport_codes(airport_codes: list[str], input_codes: list[str]) -> None:
+    """
+    Validates user input airport codes against a provided list of valid codes.
+    """
+    input_codes = [code.strip().upper() for code in input_codes]
+
+    if all(code in airport_codes for code in input_codes):
+        return
+    else:
+        raise ValueError("Invalid airport code(s). Execution stopped.")
 
 
 def convert_date_format(date: str) -> str:
@@ -34,69 +71,6 @@ def convert_date_format(date: str) -> str:
     except ValueError:
         # If it raises a ValueError, the string is not a valid date
         return "Invalid date"
-
-
-def get_date_input(prompt: str) -> str:
-    """
-    Prompts the user for a date input until a valid date is entered.
-    """
-    while True:
-        date = input(prompt)
-        if is_valid_date(date):
-            return date
-        print("Invalid date. Please try again.")
-
-
-def get_airport_mode() -> str:
-    """
-    A function to get the airport mode from user input.
-    """
-    while True:
-        airport_mode = input("\nIngresar modo de aeropuerto (nac/nonac): ")
-        if airport_mode in ["nac", "nonac"]:
-            return airport_mode
-        print("!!!Modo de aeropuerto no valido!!!")
-
-
-def validate_airport_codes(
-    airport_codes: list[str], multiple: bool = False
-) -> Union[str, list[str]]:
-    """
-    Validates user input airport codes against a provided list of valid codes.
-    """
-    while True:
-        input_prompt = (
-            "\nIngresar codigo aeropuerto origen: "
-            if not multiple
-            else "\nIngresar codigos aeropuertos destino (separados por coma): "
-        )
-        input_codes = [code.strip().upper() for code in input(input_prompt).split(",")]
-
-        if all(code in airport_codes for code in input_codes):
-            return input_codes if multiple else input_codes[0]
-
-        print("!!!Airport code(s) not valid!!!")
-
-
-def get_airports(airport_mode: str) -> list[dict[str, str]]:
-    """
-    Function to get the airports based on the airport mode.
-    """
-    return (
-        constants.national_airports
-        if airport_mode == "nac"
-        else constants.international_airports
-    )
-
-
-def print_airports(airports: list[dict[str, str]]) -> None:
-    """
-    Prints the details of each airport in the provided list.
-    """
-    for airport in airports:
-        print(
-            f'{airport["code"]} : {airport["name"]} - {airport["city"]} - {airport["country"]}'
-        )
 
 
 def get_url_flight(
@@ -204,29 +178,28 @@ def main() -> None:
     """
     Main function
     """
-    init_date = get_date_input("\nIngresar fecha de ida (yyyy-mm-dd): ")
-    final_date = get_date_input("\nIngresar fecha de regreso (yyyy-mm-dd): ")
+    init_date = os.getenv("INIT_DATE")
+    final_date = os.getenv("FINAL_DATE")
+    airport_mode = os.getenv("AIRPORT_MODE")
+    source_code = ast.literal_eval(os.getenv("SOURCE_AIRPORT_CODE"))
+    target_codes = ast.literal_eval(os.getenv("TARGET_AIRPORT_CODES"))
 
-    airport_mode = get_airport_mode()
     airports = get_airports(airport_mode)
-
-    print_airports(airports)
-
     airport_codes = [airport["code"] for airport in airports]
-    source_airport_code = validate_airport_codes(airport_codes)
-    target_airports_codes = validate_airport_codes(airport_codes, multiple=True)
 
-    for target_airport_code in target_airports_codes:
-        url_flight = get_url_flight(
-            source_airport_code, target_airport_code, init_date, final_date
-        )
-        url_hotel = get_url_hotel(target_airport_code, airports, init_date, final_date)
-        itinerary = create_itinerary(
-            source_airport_code, target_airport_code, init_date, final_date
-        )
+    validate_date(init_date)
+    validate_date(final_date)
+    validate_airport_mode(airport_mode)
+    validate_airport_codes(airport_codes, source_code)
+    validate_airport_codes(airport_codes, target_codes)
+
+    for target_code in target_codes:
+        url_flight = get_url_flight(source_code[0], target_code, init_date, final_date)
+        url_hotel = get_url_hotel(target_code, airports, init_date, final_date)
+        itinerary = create_itinerary(source_code[0], target_code, init_date, final_date)
         write_itinerary_to_file(
-            source_airport_code,
-            target_airport_code,
+            source_code[0],
+            target_code,
             init_date,
             final_date,
             url_flight,
