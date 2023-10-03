@@ -2,6 +2,7 @@
 Help with the planning of a trip
 """
 
+import os
 import constants
 from datetime import datetime
 from typing import Union
@@ -184,10 +185,16 @@ def write_itinerary_to_file(
     """
     Writes the itinerary details to a file.
     """
-    with open("itinerary.txt", "a") as f:
-        f.write(
-            f"### De {source_airport_code} a {target_airport_code} del {init_date} a {final_date}"
-        )
+    # Create output directory if not exists
+    if not os.path.exists("output"):
+        os.makedirs("output")
+
+    # Format the filename
+    filename = f"{init_date}_{final_date}.txt"
+
+    # Open the file in append mode
+    with open(os.path.join("output", filename), "a") as f:
+        f.write(f"### De {source_airport_code} a {target_airport_code}")
         f.write(f"\n>>> Vuelos\n{url_flight}\n")
         f.write(f"\n>>> Hotel\n{url_hotel}\n")
         f.write(f"\n>>> Itinerario (https://chat.openai.com)\n{itinerary}\n")
