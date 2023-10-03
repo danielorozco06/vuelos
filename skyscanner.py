@@ -5,6 +5,8 @@ Help with the planning of a trip
 import os
 import constants
 import ast
+import webbrowser
+
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -146,31 +148,29 @@ def create_itinerary(
     )
 
 
-def write_itinerary_to_file(
+def write_file(
     source_airport_code: str,
     target_airport_code: str,
-    init_date: str,
-    final_date: str,
     url_flight: str,
     url_hotel: str,
     itinerary: str,
+    pathfile: str,
 ) -> None:
     """
     Writes the itinerary details to a file.
     """
-    # Create output directory if not exists
-    if not os.path.exists("output"):
-        os.makedirs("output")
-
-    # Format the filename
-    filename = f"{init_date}_{final_date}.txt"
-
-    # Open the file in append mode
-    with open(os.path.join("output", filename), "a") as f:
+    with open(pathfile, "a") as f:
         f.write(f"### De {source_airport_code} a {target_airport_code}")
         f.write(f"\n>>> Vuelos\n{url_flight}\n")
         f.write(f"\n>>> Hotel\n{url_hotel}\n")
         f.write(f"\n>>> Itinerario (https://chat.openai.com)\n{itinerary}\n")
+
+
+def open_url_in_new_tab(url: str) -> None:
+    """
+    Open URL in a new browser tab
+    """
+    webbrowser.open_new_tab(url)
 
 
 def main() -> None:
@@ -186,25 +186,31 @@ def main() -> None:
     airports = get_airports(airport_mode)
     airport_codes = [airport["code"] for airport in airports]
 
+    if target_codes == ["ALL"]:
+        target_codes = airport_codes[1:]
+
     validate_date(init_date)
     validate_date(final_date)
     validate_airport_mode(airport_mode)
     validate_airport_codes(airport_codes, source_code)
     validate_airport_codes(airport_codes, target_codes)
 
+    filename = f"{init_date}_{final_date}.txt"
+    pathfile = os.path.join("output", filename)
+    if not os.path.exists("output"):
+        os.makedirs("output")
+    if os.path.exists(pathfile):
+        os.remove(pathfile)
+
     for target_code in target_codes:
         url_flight = get_url_flight(source_code[0], target_code, init_date, final_date)
         url_hotel = get_url_hotel(target_code, airports, init_date, final_date)
         itinerary = create_itinerary(source_code[0], target_code, init_date, final_date)
-        write_itinerary_to_file(
-            source_code[0],
-            target_code,
-            init_date,
-            final_date,
-            url_flight,
-            url_hotel,
-            itinerary,
+        write_file(
+            source_code[0], target_code, url_flight, url_hotel, itinerary, pathfile
         )
+        open_url_in_new_tab(url_flight)
+        open_url_in_new_tab(url_hotel)
 
 
 if __name__ == "__main__":
