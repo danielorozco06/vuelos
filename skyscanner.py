@@ -173,11 +173,11 @@ def open_url_in_new_tab(url: str) -> None:
     webbrowser.open_new_tab(url)
 
 
-def prepare_output_file(init_date: str, final_date: str) -> str:
+def prepare_output_file(init_date: str, final_date: str, airport_mode:str) -> str:
     """
     Prepare output file
     """
-    filename = f"{init_date}_{final_date}.txt"
+    filename = f"{airport_mode}_{init_date}_{final_date}.txt"
     pathfile = os.path.join("output", filename)
     if not os.path.exists("output"):
         os.makedirs("output")
@@ -209,7 +209,7 @@ def main() -> None:
     validate_airport_codes(airport_codes, source_code)
     validate_airport_codes(airport_codes, target_codes)
 
-    pathfile = prepare_output_file(init_date, final_date)
+    pathfile = prepare_output_file(init_date, final_date, airport_mode)
 
     for target_code in target_codes:
         url_flight = get_url_flight(source_code[0], target_code, init_date, final_date)
